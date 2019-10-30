@@ -1,4 +1,4 @@
-module github.com/blocktree/qtum-adapter
+module github.com/Assetsadapter/qtum-adapter
 
 go 1.12
 
