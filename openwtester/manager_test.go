@@ -45,7 +45,7 @@ func TestWalletManager_GetWalletInfo(t *testing.T) {
 
 	tm := testInitWalletManager()
 
-	wallet, err := tm.GetWalletInfo(testApp, "WDsK6KuiJF4NydDYLq9kEs34tmhX4aP4bZ")
+	wallet, err := tm.GetWalletInfo(testApp, "WHQF3H2Hqa2Pksp8vWmBDZpS7piEGVivRp")
 	if err != nil {
 		log.Error("unexpected error:", err)
 		return
@@ -74,7 +74,7 @@ func TestWalletManager_CreateAssetsAccount(t *testing.T) {
 
 	tm := testInitWalletManager()
 
-	walletID := "WDsK6KuiJF4NydDYLq9kEs34tmhX4aP4bZ"
+	walletID := "WEqcj8FDLvf3uAS44ChEutM6oUbmgN23bf"
 	account := &openwallet.AssetsAccount{Alias: "sumQTUM", WalletID: walletID, Required: 1, Symbol: "QTUM", IsTrust: true}
 	account, address, err := tm.CreateAssetsAccount(testApp, walletID, "12345678", account, nil)
 	if err != nil {
@@ -111,9 +111,9 @@ func TestWalletManager_CreateAddress(t *testing.T) {
 
 	tm := testInitWalletManager()
 
-	walletID := "WDsK6KuiJF4NydDYLq9kEs34tmhX4aP4bZ"
+	walletID := "WEqcj8FDLvf3uAS44ChEutM6oUbmgN23bf"
 	//accountID := "HgRBsaiKgoVDagwezos496vqKQCh41pY44JbhW65YA8t"
-	accountID := "GfjYhRkAkV23Fc14KHT8CsrNYba1638L1LuN3aPiA4Ja"
+	accountID := "4gc8Ff4tiKFtPj6JzbAZqofyUHpbVHk3CpR21hTovS8T"
 	address, err := tm.CreateAddress(testApp, walletID, accountID, 5)
 	if err != nil {
 		log.Error(err)
@@ -131,9 +131,9 @@ func TestWalletManager_GetAddressList(t *testing.T) {
 
 	tm := testInitWalletManager()
 
-	walletID := "WDsK6KuiJF4NydDYLq9kEs34tmhX4aP4bZ"
+	walletID := "WEqcj8FDLvf3uAS44ChEutM6oUbmgN23bf"
 	//accountID := "GVK6daCGmqKHfe2zEbpixarAJ9HEqawyAm9jFvmqU59Q"
-	accountID := "GfjYhRkAkV23Fc14KHT8CsrNYba1638L1LuN3aPiA4Ja"
+	accountID := "4gc8Ff4tiKFtPj6JzbAZqofyUHpbVHk3CpR21hTovS8T"
 	list, err := tm.GetAddressList(testApp, walletID, accountID, 0, -1, false)
 	if err != nil {
 		log.Error("unexpected error:", err)

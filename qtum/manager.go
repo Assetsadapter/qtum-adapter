@@ -1699,6 +1699,9 @@ func (wm *WalletManager) EstimateFee(inputs, outputs int64, feeRate decimal.Deci
 	trx_bytes := decimal.New(inputs*148+outputs*34+piece*10, 0)
 	trx_fee := trx_bytes.Div(decimal.New(1000, 0)).Mul(feeRate)
 	trx_fee = trx_fee.Round(wm.Decimal())
+	if trx_fee.LessThan(wm.config.MinFees) {
+		trx_fee = wm.config.MinFees
+	}
 	return trx_fee, nil
 }
 
@@ -1716,23 +1719,18 @@ func (wm *WalletManager) EstimateFeeRate() (decimal.Decimal, error) {
 //estimateFeeRateByCore 预估的没KB手续费率
 func (wm *WalletManager) estimateFeeRateByCore() (decimal.Decimal, error) {
 
-	defaultRate, _ := decimal.NewFromString("0.004")
-
 	//估算交易大小 手续费
 	request := []interface{}{
-		2,
+		6,
 	}
 
-	result, err := wm.walletClient.Call("estimatefee", request)
+	estimatesmartfee, err := wm.walletClient.Call("estimatesmartfee", request)
 	if err != nil {
 		return decimal.New(0, 0), err
 	}
 
-	feeRate, _ := decimal.NewFromString(result.String())
+	feeRate, _ := decimal.NewFromString(estimatesmartfee.Get("feerate").String())
 
-	if feeRate.LessThan(defaultRate) {
-		feeRate = defaultRate
-	}
 
 	return feeRate, nil
 }
@@ -2095,7 +2093,7 @@ func (wm *WalletManager) GetBalance() string {
 }
 
 //ImportAddress 导入地址核心钱包
-func (wm *WalletManager) ImportAddress(address, account string) error {
+func (wm *WalletManager)  ImportAddress(address ,account string) error {
 
 	request := []interface{}{
 		address,

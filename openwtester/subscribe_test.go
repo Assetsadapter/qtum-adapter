@@ -17,6 +17,7 @@ package openwtester
 
 import (
 	"github.com/astaxie/beego/config"
+	"github.com/blocktree/openwallet/common/file"
 	"github.com/blocktree/openwallet/log"
 	"github.com/blocktree/openwallet/openw"
 	"github.com/blocktree/openwallet/openwallet"
@@ -59,8 +60,8 @@ func TestSubscribeAddress(t *testing.T) {
 		symbol     = "QTUM"
 		//accountID  = "W4VUMN3wxQcwVEwsRvoyuhrJ95zhyc4zRW"
 		addrs = map[string]string{
-			"QiwkQ7X5v9Y89pYAJG9vTLBANVLVr4G44P": "sender",   //合约收币
-			"QcEbgUhfZXYvd5knExEeAcURtQShr9YwPV": "receiver", //合约发币
+			"Qh9SFogNRy4hE5EZHWrxNQkZjh7oYvAdLs": "sender",   //合约收币
+			"QYV6cA236fyVKpM9fCFHBp8GCATW6sUF5a": "receiver", //合约发币
 			//"QbTQBADMqSuHM6wJk2e8w1KckqK5RRYrQ6",	//主链转账
 			//"QREUcesH46vMeF6frLy92aR1QC22tADNda", 	//主链转账
 		}
@@ -92,7 +93,19 @@ func TestSubscribeAddress(t *testing.T) {
 
 	//log.Debug("already got scanner:", assetsMgr)
 	scanner := assetsMgr.GetBlockScanner()
-	scanner.SetRescanBlockHeight(427880)
+	if scanner.SupportBlockchainDAI() {
+		dbFilePath := filepath.Join("data", "db")
+		dbFileName := "blockchain.db"
+		file.MkdirAll(dbFilePath)
+		dai, err := openwallet.NewBlockchainLocal(filepath.Join(dbFilePath, dbFileName), false)
+		if err != nil {
+			log.Error("NewBlockchainLocal err: %v", err)
+			return
+		}
+
+		scanner.SetBlockchainDAI(dai)
+	}
+	//scanner.SetRescanBlockHeight(479826)
 
 	if scanner == nil {
 		log.Error(symbol, "is not support block scan")

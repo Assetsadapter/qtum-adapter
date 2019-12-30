@@ -39,7 +39,7 @@ func testNewWalletManager() *WalletManager {
 	wm := NewWalletManager()
 
 	//读取配置
-	absFile := filepath.Join("conf", "QTUM.ini")
+	absFile := filepath.Join("conf", "conf.ini")
 	//log.Debug("absFile:", absFile)
 	c, err := config.NewConfig("ini", absFile)
 	if err != nil {
@@ -350,7 +350,7 @@ func TestGetBlockChainInfo(t *testing.T) {
 }
 
 func TestListUnspent(t *testing.T) {
-	utxos, err := tw.ListUnspent(0, "QiwkQ7X5v9Y89pYAJG9vTLBANVLVr4G44P")
+	utxos, err := tw.ListUnspent(0, "Qa5Afcn9rC9mcJmFnsa9EtSibTPYYf3Ert", "QPKVppzBAx7TYvowSnHhhKsACoNr1YwY1W")
 	if err != nil {
 		t.Errorf("ListUnspent failed unexpected error: %v\n", err)
 		return

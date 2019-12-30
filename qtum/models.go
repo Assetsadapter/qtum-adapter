@@ -16,10 +16,7 @@
 package qtum
 
 import (
-	"fmt"
-	"github.com/blocktree/openwallet/crypto"
 	"github.com/blocktree/openwallet/openwallet"
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/tidwall/gjson"
 )
 
@@ -211,23 +208,6 @@ func (b *Block) BlockHeader() *openwallet.BlockHeader {
 	return &obj
 }
 
-//UnscanRecords 扫描失败的区块及交易
-type UnscanRecord struct {
-	ID          string `storm:"id"` // primary key
-	BlockHeight uint64
-	TxID        string
-	Reason      string
-}
-
-func NewUnscanRecord(height uint64, txID, reason string) *UnscanRecord {
-	obj := UnscanRecord{}
-	obj.BlockHeight = height
-	obj.TxID = txID
-	obj.Reason = reason
-	obj.ID = common.Bytes2Hex(crypto.SHA256([]byte(fmt.Sprintf("%d_%s", height, txID))))
-	return &obj
-}
-
 //type Transaction struct {
 
 /*
@@ -330,6 +310,7 @@ type Transaction struct {
 	Confirmations   uint64
 	Blocktime       int64
 	IsCoinBase      bool
+	IsCoinstake     bool
 	Fees            string
 	Isqrc20Transfer bool
 
@@ -356,17 +337,16 @@ type Vout struct {
 }
 
 type TokenReceipt struct {
-
-	TxHash            string
+	TxHash          string
 	BlockHash       string
 	BlockHeight     uint64
-	Sender string
-	From string
-	To string
-	GasUsed uint64
+	Sender          string
+	From            string
+	To              string
+	GasUsed         uint64
 	ContractAddress string
-	Excepted string
-	Amount string
+	Excepted        string
+	Amount          string
 }
 
 func newTxByCore(json *gjson.Result, isTestnet bool) *Transaction {

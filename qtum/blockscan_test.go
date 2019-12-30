@@ -42,7 +42,7 @@ func TestGetBlockHeight(t *testing.T) {
 }
 
 func TestGetLocalNewBlock(t *testing.T) {
-	height, hash := tw.GetLocalNewBlock()
+	height, hash, _ := tw.blockscanner.GetLocalNewBlock()
 	t.Logf("GetLocalBlockHeight height = %d \n", height)
 	t.Logf("GetLocalBlockHeight hash = %v \n", hash)
 }
@@ -52,12 +52,12 @@ func TestSaveLocalBlockHeight(t *testing.T) {
 	header, _ := bs.GetCurrentBlockHeader()
 	t.Logf("SaveLocalBlockHeight height = %d \n", header.Height)
 	t.Logf("GetLocalBlockHeight hash = %v \n", header.Hash)
-	tw.SaveLocalNewBlock(header.Height, header.Hash)
+	tw.blockscanner.SaveLocalNewBlock(header.Height, header.Hash)
 }
 
 func TestGetBlockHash(t *testing.T) {
 	//height := GetLocalBlockHeight()
-	hash, err := tw.GetBlockHash(231290)
+	hash, err := tw.GetBlockHash(471507)
 	if err != nil {
 		t.Errorf("GetBlockHash failed unexpected error: %v\n", err)
 		return
@@ -66,7 +66,7 @@ func TestGetBlockHash(t *testing.T) {
 }
 
 func TestGetBlock(t *testing.T) {
-	raw, err := tw.GetBlock("7b12f59d92b3f4d4b4793df691942ab9ab2621187a751b875df983b4a22f73a5")
+	raw, err := tw.GetBlock("d91ee1ab39e55fd0dfdca242d44931ea4aa1cdc354b70b9e4531dae435da80dc")
 	if err != nil {
 		t.Errorf("GetBlock failed unexpected error: %v\n", err)
 		return
@@ -75,12 +75,44 @@ func TestGetBlock(t *testing.T) {
 }
 
 func TestGetTransaction(t *testing.T) {
-	raw, err := tw.GetTransaction("906c03ae2e22c299616cda1ac32121c6e6fa7161d3f3b915447476922421202c")
+	raw, err := tw.GetTransaction("1385cd40eaf4565a2de03af63ea5dc31672515fae33e12c7defcfc6477254328")
 	if err != nil {
 		t.Errorf("GetTransaction failed unexpected error: %v\n", err)
 		return
 	}
-	t.Logf("GetTransaction = %+v \n", raw)
+
+	t.Logf("BlockHash = %v \n", raw.BlockHash)
+	t.Logf("BlockHeight = %v \n", raw.BlockHeight)
+	t.Logf("Blocktime = %v \n", raw.Blocktime)
+	t.Logf("Fees = %v \n", raw.Fees)
+
+	t.Logf("========= vins ========= \n")
+
+	for i, vin := range raw.Vins {
+		t.Logf("TxID[%d] = %v \n", i, vin.TxID)
+		t.Logf("Vout[%d] = %v \n", i, vin.Vout)
+		t.Logf("Addr[%d] = %v \n", i, vin.Addr)
+		t.Logf("Value[%d] = %v \n", i, vin.Value)
+	}
+
+	t.Logf("========= vouts ========= \n")
+
+	for i, out := range raw.Vouts {
+		t.Logf("ScriptPubKey[%d] = %v \n", i, out.ScriptPubKey)
+		t.Logf("Addr[%d] = %v \n", i, out.Addr)
+		t.Logf("Value[%d] = %v \n", i, out.Value)
+		t.Logf("Type[%d] = %v \n", i, out.Type)
+	}
+
+	t.Logf("========= TokenReceipts ========= \n")
+
+	for i, receipt := range raw.TokenReceipts {
+		t.Logf("From[%d] = %v \n", i, receipt.From)
+		t.Logf("To[%d] = %v \n", i, receipt.To)
+		t.Logf("Value[%d] = %v \n", i, receipt.Amount)
+		t.Logf("Contract[%d] = %v \n", i, receipt.ContractAddress)
+	}
+
 }
 
 
@@ -206,7 +238,7 @@ func TestWallet_GetRecharges(t *testing.T) {
 //}
 
 func TestGetUnscanRecords(t *testing.T) {
-	list, err := tw.GetUnscanRecords()
+	list, err := tw.blockscanner.GetUnscanRecords()
 	if err != nil {
 		t.Errorf("GetUnscanRecords failed unexpected error: %v\n", err)
 		return
